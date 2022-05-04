@@ -128,7 +128,7 @@ class AppThemeShared {
         hintStyle: Theme.of(context)
             .textTheme
             .headline3
-            ?.copyWith(fontSize: 14, color: Colors.black.withOpacity(0.7)),
+            ?.copyWith(fontSize: 14, color: Color(0xff757575), wordSpacing: 2),
         // labelText: labelText,
         // labelStyle: Theme.of(context)
         //     .textTheme
