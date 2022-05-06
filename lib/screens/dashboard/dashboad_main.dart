@@ -5,11 +5,12 @@ import 'package:flutter/scheduler.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:oye_beauty_assignment/dashboard/carousel.dart';
-import 'package:oye_beauty_assignment/dashboard/cleaning_service.dart';
-import 'package:oye_beauty_assignment/dashboard/electrician_services.dart';
-import 'package:oye_beauty_assignment/dashboard/premium_home_service.dart';
-import 'package:oye_beauty_assignment/dashboard/same_day_service.dart';
+
+import 'package:oye_beauty_assignment/screens/dashboard/carousel.dart';
+import 'package:oye_beauty_assignment/screens/dashboard/cleaning_service.dart';
+import 'package:oye_beauty_assignment/screens/dashboard/electrician_services.dart';
+import 'package:oye_beauty_assignment/screens/dashboard/premium_home_service.dart';
+import 'package:oye_beauty_assignment/screens/dashboard/same_day_service.dart';
 import 'package:oye_beauty_assignment/shared/app_theme_shared.dart';
 import 'package:oye_beauty_assignment/shared/dialogs.dart';
 import 'package:oye_beauty_assignment/shared/utility.dart';
@@ -168,8 +169,17 @@ class _DashboardMainState extends State<DashboardMain> {
           SliverGrid.extent(
             maxCrossAxisExtent: MediaQuery.of(context).size.width * 0.5,
             children: homeServiceData
-                .map((homeServiceDataCard) => PremiumHomeService(
-                    homeServiceDataCard: homeServiceDataCard))
+                .map((homeServiceDataCard) => GestureDetector(
+                      onTap: () {
+                        if (FirebaseAuth.instance.currentUser == null) {
+                          authBottomSheet();
+                        } else {
+                          Navigator.pushNamed(context, '/selectDataTime');
+                        }
+                      },
+                      child: PremiumHomeService(
+                          homeServiceDataCard: homeServiceDataCard),
+                    ))
                 .toList(),
           ),
           SliverToBoxAdapter(
