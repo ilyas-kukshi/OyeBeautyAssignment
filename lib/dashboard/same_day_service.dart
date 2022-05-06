@@ -25,7 +25,7 @@ class _SameDaySreviceState extends State<SameDaySrevice> {
         alignment: Alignment.topCenter,
         children: [
           Padding(
-            padding: EdgeInsets.only(top: 50),
+            padding: const EdgeInsets.only(top: 50),
             child: Card(
               elevation: 7,
               shape: RoundedRectangleBorder(

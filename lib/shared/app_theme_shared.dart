@@ -19,7 +19,7 @@ class AppThemeShared {
     return AppBar(
       title: Text(
         title,
-        style: Theme.of(context).textTheme.headline2?.copyWith(fontSize: 28),
+        style: Theme.of(context).textTheme.headline3?.copyWith(fontSize: 16),
       ),
       automaticallyImplyLeading: false,
       centerTitle: centerTitle,
@@ -47,7 +47,7 @@ class AppThemeShared {
         buttonText,
         style: Theme.of(context)
             .textTheme
-            .headline1
+            .headline3
             ?.copyWith(fontSize: 16)
             .copyWith(color: Colors.black),
       ),
@@ -128,7 +128,7 @@ class AppThemeShared {
         hintStyle: Theme.of(context)
             .textTheme
             .headline3
-            ?.copyWith(fontSize: 14, color: Color(0xff757575), wordSpacing: 2),
+            ?.copyWith(fontSize: 14, color: const Color(0xff757575), wordSpacing: 2),
         // labelText: labelText,
         // labelStyle: Theme.of(context)
         //     .textTheme
