@@ -1,6 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:oye_beauty_assignment/screens/address_module/add_address.dart';
+import 'package:oye_beauty_assignment/screens/address_module/select_address.dart';
 import 'package:oye_beauty_assignment/screens/dashboard/dashboad_main.dart';
+import 'package:oye_beauty_assignment/screens/payment_module/checkout.dart';
+import 'package:oye_beauty_assignment/screens/payment_module/payment_successful.dart';
 import 'package:oye_beauty_assignment/screens/select_date_time.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -35,10 +39,25 @@ class MyApp extends StatelessWidget {
     switch (settings.name) {
       case '/selectDataTime':
         return PageTransition(
-            child: SelectDateTime(), type: PageTransitionType.leftToRight);
+            child: const SelectDateTime(),
+            type: PageTransitionType.leftToRight);
+      case '/selectAddress':
+        return PageTransition(
+            child: const SelectAddress(), type: PageTransitionType.leftToRight);
+      case '/addAddress':
+        return PageTransition(
+            child: const AddAddress(), type: PageTransitionType.leftToRight);
+      case '/checkout':
+        return PageTransition(
+            child: const Checkout(), type: PageTransitionType.leftToRight);
+      case '/paymentSuccessful':
+        return PageTransition(
+            child: const PaymentSuccessful(),
+            type: PageTransitionType.leftToRight);
+
       default:
         return PageTransition(
-            child: DashboardMain(), type: PageTransitionType.leftToRight);
+            child: const DashboardMain(), type: PageTransitionType.leftToRight);
     }
   }
 }

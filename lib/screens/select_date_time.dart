@@ -40,7 +40,7 @@ class _SelectDateTimeState extends State<SelectDateTime> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xffF7F8FA),
+        backgroundColor: const Color(0xffE4E4E4),
         centerTitle: true,
         title: Text(
           'Select date & time',
@@ -78,9 +78,9 @@ class _SelectDateTimeState extends State<SelectDateTime> {
             height: 80,
             child: RawScrollbar(
               controller: scrollController,
-              radius: Radius.circular(4),
+              radius: const Radius.circular(4),
               isAlwaysShown: true,
-              thumbColor: Color(0xffC4C4C4),
+              thumbColor: const Color(0xffC4C4C4),
               child: ListView.builder(
                 controller: scrollController,
                 itemCount: dateAndSlots.length,
@@ -97,7 +97,7 @@ class _SelectDateTimeState extends State<SelectDateTime> {
                         width: 80,
                         decoration: BoxDecoration(
                             color: dateSelectedIndex == index
-                                ? Color(0xff025B5D)
+                                ? const Color(0xff025B5D)
                                 : Colors.white,
                             border: Border.all(
                               color: const Color(0xff757575).withOpacity(0.5),
@@ -182,7 +182,7 @@ class _SelectDateTimeState extends State<SelectDateTime> {
                                 ? timeSlotSelectedIndex == index
                                     ? const Color(0xff025B5D)
                                     : Colors.white
-                                : Color(0xffCBCBCB).withOpacity(0.5),
+                                : const Color(0xffCBCBCB).withOpacity(0.5),
                             border: Border.all(
                               color: const Color(0xff757575).withOpacity(0.5),
                             ),
@@ -215,10 +215,10 @@ class _SelectDateTimeState extends State<SelectDateTime> {
             padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12),
             child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Color(0xffE8625D),
+                  primary: const Color(0xffE8625D),
                   fixedSize: Size(MediaQuery.of(context).size.width, 50),
                 ),
-                onPressed: () {},
+                onPressed: () => Navigator.pushNamed(context, '/selectAddress'),
                 child: Text(
                   'Continue',
                   style: Theme.of(context).textTheme.headline3!.copyWith(
@@ -249,7 +249,7 @@ class _SelectDateTimeState extends State<SelectDateTime> {
     for (int i = 0; i < 7; i++) {
       List<TimeSlots> todaysSlots = [];
 
-      timeSlots.forEach((element) {
+      for (var element in timeSlots) {
         if (element.day == now.day) {
           if (element.hour > now.hour && element.minute > now.minute) {
             todaysSlots.add(TimeSlots(DateFormat.jm().format(element), true));
@@ -259,7 +259,7 @@ class _SelectDateTimeState extends State<SelectDateTime> {
         } else {
           todaysSlots.add(TimeSlots(DateFormat.jm().format(element), true));
         }
-      });
+      }
 
       dateAndSlots.add(BookingDate(now, true, todaysSlots));
       now = DateTime(now.year, now.month, now.day + 1);

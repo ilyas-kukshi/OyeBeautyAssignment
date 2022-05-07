@@ -1,4 +1,4 @@
-import 'package:argon_buttons_flutter/argon_buttons_flutter.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -487,7 +487,7 @@ class _DashboardMainState extends State<DashboardMain> {
                   style: Theme.of(context)
                       .textTheme
                       .headline4!
-                      .copyWith(fontSize: 12, color: Color(0xffD2137B)),
+                      .copyWith(fontSize: 12, color: const Color(0xffD2137B)),
                 ),
                 TextSpan(
                   text: 'and',
@@ -500,7 +500,7 @@ class _DashboardMainState extends State<DashboardMain> {
                   style: Theme.of(context)
                       .textTheme
                       .headline4!
-                      .copyWith(fontSize: 12, color: Color(0xffD2137B)),
+                      .copyWith(fontSize: 12, color: const Color(0xffD2137B)),
                 ),
                 TextSpan(
                   text:
@@ -544,14 +544,14 @@ class _DashboardMainState extends State<DashboardMain> {
               },
               pinTheme: PinTheme(
                   shape: PinCodeFieldShape.box,
-                  fieldOuterPadding: EdgeInsets.symmetric(horizontal: 0),
+                  fieldOuterPadding: const EdgeInsets.symmetric(horizontal: 0),
                   borderWidth: 2,
                   fieldHeight: 45,
                   fieldWidth: 50,
                   borderRadius: BorderRadius.circular(12),
-                  activeColor: Color(0xffd2137b),
-                  inactiveColor: Color(0xffd2137b),
-                  selectedColor: Color(0xffd2137b)),
+                  activeColor: const Color(0xffd2137b),
+                  inactiveColor: const Color(0xffd2137b),
+                  selectedColor: const Color(0xffd2137b)),
             ),
           ),
           Padding(

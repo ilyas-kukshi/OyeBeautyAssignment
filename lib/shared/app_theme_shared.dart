@@ -15,7 +15,7 @@ class AppThemeShared {
       bool? centerTitle = true,
       Widget? leading,
       List<Widget>? actions,
-      Color? backgroundColor = const Color(0xff04D4F0)}) {
+      Color? backgroundColor = Colors.white}) {
     return AppBar(
       title: Text(
         title,
@@ -125,10 +125,8 @@ class AppThemeShared {
       style: Theme.of(context).textTheme.headline3?.copyWith(fontSize: 14),
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: Theme.of(context)
-            .textTheme
-            .headline3
-            ?.copyWith(fontSize: 14, color: const Color(0xff757575), wordSpacing: 2),
+        hintStyle: Theme.of(context).textTheme.headline3?.copyWith(
+            fontSize: 14, color: const Color(0xff757575), wordSpacing: 2),
         // labelText: labelText,
         // labelStyle: Theme.of(context)
         //     .textTheme

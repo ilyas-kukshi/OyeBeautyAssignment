@@ -16,8 +16,9 @@ class _PaymentSuccessfulState extends State<PaymentSuccessful> {
       ),
       body: Column(
         children: [
-          Image.asset('assets/images/paymentsuccessful.png'),
-          SizedBox(height: 12),
+          const SizedBox(height: 20),
+          Center(child: Image.asset('assets/images/paymentsuccessful.png')),
+          const SizedBox(height: 20),
           Text(
             'Payment Successful!',
             style: Theme.of(context)
@@ -25,13 +26,11 @@ class _PaymentSuccessfulState extends State<PaymentSuccessful> {
                 .headline2!
                 .copyWith(fontSize: 30, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 16),
           Text(
             'Thank you for shopping with us.',
-            style: Theme.of(context)
-                .textTheme
-                .headline2!
-                .copyWith(fontSize: 12, fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.headline2!.copyWith(
+                fontSize: 12, fontWeight: FontWeight.bold, wordSpacing: 2),
           ),
         ],
       ),
