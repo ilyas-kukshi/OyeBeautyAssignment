@@ -11,6 +11,7 @@ class SelectAddress extends StatefulWidget {
 
 class _SelectAddressState extends State<SelectAddress> {
   int selectedIndex = 0;
+  bool addressSelected = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,99 +76,117 @@ class _SelectAddressState extends State<SelectAddress> {
                       ConnectionState.waiting) {
                     return const Text('Loading data');
                   } else {
-                    return Expanded(
-                      child: ListView.builder(
-                        itemCount: snapshot.data.size,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 12.0),
-                            child: GestureDetector(
-                              onTap: () => setState(() {
-                                selectedIndex = index;
-                              }),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: selectedIndex == index
-                                        ? const Color(0xff00A3FF)
-                                        : Colors.white,
-                                    border: Border.all(
-                                        color: const Color(0xffEAEAEA))),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          snapshot.data.docs[index]['type'],
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline3!
-                                              .copyWith(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                        ),
-                                        const SizedBox(height: 16),
-                                        Text(
-                                          snapshot.data.docs[index]['name'],
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline3!
-                                              .copyWith(
+                    if (snapshot.data.size > 0) {
+                   
+                      return Expanded(
+                        child: ListView.builder(
+                          itemCount: snapshot.data.size,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 12.0),
+                              child: GestureDetector(
+                                onTap: () => setState(() {
+                                  selectedIndex = index;
+                                }),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: selectedIndex == index
+                                          ? const Color(0xff00A3FF)
+                                          : Colors.white,
+                                      border: Border.all(
+                                          color: const Color(0xffEAEAEA))),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            snapshot.data.docs[index]['type'],
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline3!
+                                                .copyWith(
                                                   fontSize: 16,
-                                                  color:
-                                                      const Color(0xff585858)),
-                                        ),
-                                        Text(
-                                          snapshot.data.docs[index]
-                                              ['flat_building_street'],
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline3!
-                                              .copyWith(
-                                                  fontSize: 16,
-                                                  color:
-                                                      const Color(0xff585858)),
-                                        ),
-                                        Text(
-                                          snapshot.data.docs[index]
-                                              ['locationAddress'],
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline3!
-                                              .copyWith(
-                                                  fontSize: 16,
-                                                  color:
-                                                      const Color(0xff585858)),
-                                        ),
-                                      ]),
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                          ),
+                                          const SizedBox(height: 16),
+                                          Text(
+                                            snapshot.data.docs[index]['name'],
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline3!
+                                                .copyWith(
+                                                    fontSize: 16,
+                                                    color: const Color(
+                                                        0xff585858)),
+                                          ),
+                                          Text(
+                                            snapshot.data.docs[index]
+                                                ['flat_building_street'],
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline3!
+                                                .copyWith(
+                                                    fontSize: 16,
+                                                    color: const Color(
+                                                        0xff585858)),
+                                          ),
+                                          Text(
+                                            snapshot.data.docs[index]
+                                                ['locationAddress'],
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline3!
+                                                .copyWith(
+                                                    fontSize: 16,
+                                                    color: const Color(
+                                                        0xff585858)),
+                                          ),
+                                        ]),
+                                  ),
                                 ),
                               ),
-                            ),
-                          );
-                        },
-                      ),
-                    );
+                            );
+                          },
+                        ),
+                      );
+                    } else {
+                      return Text(
+                        'Please add an address first',
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline1!
+                            .copyWith(fontSize: 18),
+                      );
+                    }
                   }
                 },
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20.0),
-                child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: const Color(0xff00A3FF),
-                      fixedSize: Size(MediaQuery.of(context).size.width, 50),
-                    ),
-                    onPressed: () => Navigator.pushNamed(context, '/checkout'),
-                    child: Text(
-                      'Next',
-                      style: Theme.of(context).textTheme.headline3!.copyWith(
-                          fontSize: 18,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600),
-                    )),
-              )
+               Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 20.0),
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: const Color(0xff00A3FF),
+                            fixedSize:
+                                Size(MediaQuery.of(context).size.width, 50),
+                          ),
+                          onPressed: () =>
+                              Navigator.pushNamed(context, '/checkout'),
+                          child: Text(
+                            'Next',
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline3!
+                                .copyWith(
+                                    fontSize: 18,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600),
+                          )),
+                    )
+                  
             ],
           ),
         ),

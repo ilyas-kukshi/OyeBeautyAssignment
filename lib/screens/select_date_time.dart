@@ -251,10 +251,15 @@ class _SelectDateTimeState extends State<SelectDateTime> {
 
       for (var element in timeSlots) {
         if (element.day == now.day) {
-          if (element.hour > now.hour && element.minute > now.minute) {
+          if (element.hour > now.hour) {
             todaysSlots.add(TimeSlots(DateFormat.jm().format(element), true));
           } else {
-            todaysSlots.add(TimeSlots(DateFormat.jm().format(element), false));
+            if (element.hour == now.hour && element.minute > now.minute) {
+              todaysSlots.add(TimeSlots(DateFormat.jm().format(element), true));
+            } else {
+              todaysSlots
+                  .add(TimeSlots(DateFormat.jm().format(element), false));
+            }
           }
         } else {
           todaysSlots.add(TimeSlots(DateFormat.jm().format(element), true));

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class SameDaySrevice extends StatefulWidget {
   SameDayServiceModel sameDayServiceDataCard;
   SameDaySrevice({Key? key, required this.sameDayServiceDataCard})

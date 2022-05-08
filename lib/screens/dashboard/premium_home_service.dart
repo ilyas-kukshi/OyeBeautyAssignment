@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class PremiumHomeService extends StatefulWidget {
   PremiumHomeServiceModel homeServiceDataCard;
   PremiumHomeService({Key? key, required this.homeServiceDataCard})

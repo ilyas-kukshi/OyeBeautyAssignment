@@ -24,7 +24,20 @@ class _CheckoutState extends State<Checkout> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xffF3F4F6),
-      appBar: AppThemeShared.appBar(title: "Checkout", context: context),
+      appBar: AppThemeShared.appBar(
+        title: "Checkout",
+        context: context,
+        leading: GestureDetector(
+          onTap: () => Navigator.pop(context),
+          child: const Padding(
+            padding: EdgeInsets.only(left: 8.0),
+            child: Icon(
+              Icons.arrow_back_ios,
+              color: Colors.black,
+            ),
+          ),
+        ),
+      ),
       body: Column(
         children: [
           const SizedBox(height: 16),
@@ -51,255 +64,266 @@ class _CheckoutState extends State<Checkout> {
             ),
           ),
           const SizedBox(height: 20),
-          Container(
-            color: Colors.white,
-            height: 400,
-            child: ListView(
-              shrinkWrap: true,
-              children: [
-                ExpansionTile(
-                  expandedCrossAxisAlignment: CrossAxisAlignment.start,
-                  onExpansionChanged: (value) {
-                    if (value) {
-                      setState(() {
-                        radioValue = 0;
-                      });
-                    }
-                  },
-                  title: Align(
-                    alignment: Alignment.topLeft,
-                    child: Image.asset(
-                      'assets/images/paytm_logo.png',
-                      height: 20,
-                    ),
-                  ),
-                  subtitle: Text(
-                    'Pay easily using your saved payment method',
-                    style: Theme.of(context).textTheme.headline1!.copyWith(
-                          fontSize: 12,
-                          color: const Color(0xff585858),
-                        ),
-                  ),
-                  leading: Radio(
-                      value: 0,
-                      groupValue: radioValue,
-                      onChanged: (value) {
+          Expanded(
+            child: Container(
+              color: Colors.white,
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  ExpansionTile(
+                    initiallyExpanded: true,
+                    trailing: const SizedBox(),
+                    expandedCrossAxisAlignment: CrossAxisAlignment.start,
+                    onExpansionChanged: (value) {
+                      if (value) {
                         setState(() {
                           radioValue = 0;
                         });
-                      }),
-                  children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.9,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Mobile number registered with Paytm',
-                            style:
-                                Theme.of(context).textTheme.headline1!.copyWith(
-                                      fontSize: 12,
-                                      color: const Color(0xff585858),
-                                    ),
+                      }
+                    },
+                    title: Align(
+                      alignment: Alignment.topLeft,
+                      child: Image.asset(
+                        'assets/images/paytm_logo.png',
+                        height: 20,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'Pay easily using your saved payment method',
+                      style: Theme.of(context).textTheme.headline1!.copyWith(
+                            fontSize: 12,
+                            color: const Color(0xff585858),
                           ),
-                          Center(
-                            child: SizedBox(
-                              child: TextFormField(
-                                controller: phoneNumberController,
-                                validator: Utility.phoneNumberValidator,
-                                inputFormatters: [
-                                  LengthLimitingTextInputFormatter(10)
-                                ],
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline3!
-                                    .copyWith(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.bold),
-                                keyboardType: TextInputType.phone,
-                                decoration: InputDecoration(
-                                  hintText: 'Phone Number',
-                                  hintStyle: Theme.of(context)
-                                      .textTheme
-                                      .headline3!
-                                      .copyWith(
-                                          color: const Color(0xff7D7D7D),
-                                          fontSize: 13),
-                                  prefixIcon: Padding(
-                                    padding: const EdgeInsets.only(top: 12.0),
-                                    child: Text(
-                                      '+91',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline1!
-                                          .copyWith(
-                                            fontSize: 12,
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                    ),
+                    ),
+                    leading: Radio(
+                        value: 0,
+                        groupValue: radioValue,
+                        onChanged: (value) {
+                          setState(() {
+                            radioValue = 0;
+                          });
+                        }),
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Mobile number registered with Paytm',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline1!
+                                  .copyWith(
+                                    fontSize: 12,
+                                    color: const Color(0xff585858),
                                   ),
-                                  border: underlineBorder,
-                                  enabledBorder: underlineBorder,
-                                  focusedBorder: underlineBorder,
-                                ),
-                              ),
                             ),
-                          ),
-                          Row(
-                            children: [
-                              Checkbox(
-                                  fillColor: MaterialStateProperty.all(
-                                      const Color(0xff00A3FF)),
-                                  value: rememberPaytmNumber,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      rememberPaytmNumber = value!;
-                                    });
-                                  }),
-                              Text(
-                                'Remember this number for future login',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline1!
-                                    .copyWith(
-                                      fontSize: 12,
-                                      color: const Color(0xff585858),
-                                    ),
-                              ),
-                            ],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 20.0),
-                            child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  primary: const Color(0xff00A3FF),
-                                  fixedSize: Size(
-                                      MediaQuery.of(context).size.width, 50),
-                                ),
-                                onPressed: () => Navigator.pushNamed(
-                                    context, '/paymentSuccessful'),
-                                child: Text(
-                                  'Proceed',
+                            Center(
+                              child: SizedBox(
+                                child: TextFormField(
+                                  controller: phoneNumberController,
+                                  validator: Utility.phoneNumberValidator,
+                                  inputFormatters: [
+                                    LengthLimitingTextInputFormatter(10)
+                                  ],
                                   style: Theme.of(context)
                                       .textTheme
                                       .headline3!
                                       .copyWith(
-                                          fontSize: 18,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w600),
-                                )),
-                          )
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-                ExpansionTile(
-                  onExpansionChanged: (value) {
-                    if (value) {
-                      setState(() {
-                        radioValue = 1;
-                      });
-                    }
-                  },
-                  title: Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      'Debit Card',
-                      style: Theme.of(context).textTheme.headline1!.copyWith(
-                            fontSize: 16,
-                          ),
-                    ),
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.bold),
+                                  keyboardType: TextInputType.phone,
+                                  decoration: InputDecoration(
+                                    hintText: 'Phone Number',
+                                    hintStyle: Theme.of(context)
+                                        .textTheme
+                                        .headline3!
+                                        .copyWith(
+                                            color: const Color(0xff7D7D7D),
+                                            fontSize: 13),
+                                    prefixIcon: Padding(
+                                      padding: const EdgeInsets.only(top: 12.0),
+                                      child: Text(
+                                        '+91',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline1!
+                                            .copyWith(
+                                              fontSize: 12,
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                      ),
+                                    ),
+                                    border: underlineBorder,
+                                    enabledBorder: underlineBorder,
+                                    focusedBorder: underlineBorder,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                Checkbox(
+                                    fillColor: MaterialStateProperty.all(
+                                        const Color(0xff00A3FF)),
+                                    value: rememberPaytmNumber,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        rememberPaytmNumber = value!;
+                                      });
+                                    }),
+                                Text(
+                                  'Remember this number for future login',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline1!
+                                      .copyWith(
+                                        fontSize: 12,
+                                        color: const Color(0xff585858),
+                                      ),
+                                ),
+                              ],
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 20.0),
+                              child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    primary: const Color(0xff00A3FF),
+                                    fixedSize: Size(
+                                        MediaQuery.of(context).size.width, 50),
+                                  ),
+                                  onPressed: () => Navigator.pushNamed(
+                                      context, '/paymentSuccessful'),
+                                  child: Text(
+                                    'Proceed',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline3!
+                                        .copyWith(
+                                            fontSize: 18,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w600),
+                                  )),
+                            )
+                          ],
+                        ),
+                      )
+                    ],
                   ),
-                  leading: Radio(
-                      value: 1,
-                      groupValue: radioValue,
-                      onChanged: (value) {
+                  ExpansionTile(
+                    trailing: const SizedBox(),
+                    onExpansionChanged: (value) {
+                      if (value) {
                         setState(() {
                           radioValue = 1;
                         });
-                      }),
-                ),
-                ExpansionTile(
-                  onExpansionChanged: (value) {
-                    if (value) {
-                      setState(() {
-                        radioValue = 2;
-                      });
-                    }
-                  },
-                  title: Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      'Credit Card',
-                      style: Theme.of(context).textTheme.headline1!.copyWith(
-                            fontSize: 16,
-                          ),
+                      }
+                    },
+                    title: Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        'Debit Card',
+                        style: Theme.of(context).textTheme.headline1!.copyWith(
+                              fontSize: 16,
+                            ),
+                      ),
                     ),
+                    leading: Radio(
+                        value: 1,
+                        groupValue: radioValue,
+                        onChanged: (value) {
+                          setState(() {
+                            radioValue = 1;
+                          });
+                        }),
                   ),
-                  leading: Radio(
-                      value: 2,
-                      groupValue: radioValue,
-                      onChanged: (value) {
+                  ExpansionTile(
+                    trailing: const SizedBox(),
+                    onExpansionChanged: (value) {
+                      if (value) {
                         setState(() {
                           radioValue = 2;
                         });
-                      }),
-                ),
-                ExpansionTile(
-                  onExpansionChanged: (value) {
-                    if (value) {
-                      setState(() {
-                        radioValue = 3;
-                      });
-                    }
-                  },
-                  title: Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      'UPI',
-                      style: Theme.of(context).textTheme.headline1!.copyWith(
-                            fontSize: 16,
-                          ),
+                      }
+                    },
+                    title: Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        'Credit Card',
+                        style: Theme.of(context).textTheme.headline1!.copyWith(
+                              fontSize: 16,
+                            ),
+                      ),
                     ),
+                    leading: Radio(
+                        value: 2,
+                        groupValue: radioValue,
+                        onChanged: (value) {
+                          setState(() {
+                            radioValue = 2;
+                          });
+                        }),
                   ),
-                  leading: Radio(
-                      value: 3,
-                      groupValue: radioValue,
-                      onChanged: (value) {
+                  ExpansionTile(
+                    trailing: const SizedBox(),
+                    onExpansionChanged: (value) {
+                      if (value) {
                         setState(() {
                           radioValue = 3;
                         });
-                      }),
-                ),
-                ExpansionTile(
-                  onExpansionChanged: (value) {
-                    if (value) {
-                      setState(() {
-                        radioValue = 4;
-                      });
-                    }
-                  },
-                  title: Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      'Net Banking',
-                      style: Theme.of(context).textTheme.headline1!.copyWith(
-                            fontSize: 16,
-                          ),
+                      }
+                    },
+                    title: Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        'UPI',
+                        style: Theme.of(context).textTheme.headline1!.copyWith(
+                              fontSize: 16,
+                            ),
+                      ),
                     ),
+                    leading: Radio(
+                        value: 3,
+                        groupValue: radioValue,
+                        onChanged: (value) {
+                          setState(() {
+                            radioValue = 3;
+                          });
+                        }),
                   ),
-                  leading: Radio(
-                      value: 4,
-                      groupValue: radioValue,
-                      onChanged: (value) {
+                  ExpansionTile(
+                    trailing: const SizedBox(),
+                    iconColor: Colors.transparent,
+                    onExpansionChanged: (value) {
+                      if (value) {
                         setState(() {
                           radioValue = 4;
                         });
-                      }),
-                ),
-              ],
+                      }
+                    },
+                    title: Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        'Net Banking',
+                        style: Theme.of(context).textTheme.headline1!.copyWith(
+                              fontSize: 16,
+                            ),
+                      ),
+                    ),
+                    leading: Radio(
+                        value: 4,
+                        groupValue: radioValue,
+                        onChanged: (value) {
+                          setState(() {
+                            radioValue = 4;
+                          });
+                        }),
+                  ),
+                ],
+              ),
             ),
           )
         ],

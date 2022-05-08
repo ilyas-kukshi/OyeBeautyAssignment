@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class Carousel extends StatefulWidget {
   List<String> imageData;
   double viewportFraction = 1.0;

@@ -1,4 +1,3 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -10,6 +9,7 @@ import 'package:oye_beauty_assignment/screens/dashboard/carousel.dart';
 import 'package:oye_beauty_assignment/screens/dashboard/cleaning_service.dart';
 import 'package:oye_beauty_assignment/screens/dashboard/electrician_services.dart';
 import 'package:oye_beauty_assignment/screens/dashboard/premium_home_service.dart';
+import 'package:oye_beauty_assignment/screens/dashboard/primary_services.dart';
 import 'package:oye_beauty_assignment/screens/dashboard/same_day_service.dart';
 import 'package:oye_beauty_assignment/shared/app_theme_shared.dart';
 import 'package:oye_beauty_assignment/shared/dialogs.dart';
@@ -29,11 +29,24 @@ class _DashboardMainState extends State<DashboardMain> {
   String verificationIdLocal = '';
   bool otpSent = false;
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   GlobalKey<FormState> phnNumberForm = GlobalKey<FormState>();
   GlobalKey<FormState> otpForm = GlobalKey<FormState>();
 
-  TextEditingController phoneNumberController = TextEditingController();
-  TextEditingController otpController = TextEditingController();
+  List<PrimaryServicesModel> primaryServicesData = [
+    PrimaryServicesModel(Icons.cut, 'Salon at Home'),
+    PrimaryServicesModel(Icons.electrical_services, 'Electrician'),
+    PrimaryServicesModel(Icons.plumbing, 'Plumber'),
+    PrimaryServicesModel(Icons.videocam, 'CCTV'),
+    PrimaryServicesModel(Icons.handyman, 'AC Service'),
+    PrimaryServicesModel(Icons.local_shipping, 'Packers and Movers'),
+    PrimaryServicesModel(Icons.cleaning_services, 'Cleaning '),
+    PrimaryServicesModel(Icons.palette, 'Painting'),
+    PrimaryServicesModel(Icons.blender, 'Home Appliances'),
+    PrimaryServicesModel(Icons.sanitizer, 'Disinfection'),
+    PrimaryServicesModel(Icons.pest_control, 'Pest Control'),
+    PrimaryServicesModel(Icons.hardware, 'Carpenter'),
+  ];
 
   List<String> imageData = [
     'assets/images/oyebeauty1.png',
@@ -69,19 +82,22 @@ class _DashboardMainState extends State<DashboardMain> {
       borderSide: BorderSide(color: Color(0xffD2137B), width: 2));
   @override
   void initState() {
+    super.initState();
     if (FirebaseAuth.instance.currentUser == null) {
       SchedulerBinding.instance?.addPostFrameCallback((timeStamp) {
         authBottomSheet();
       });
     }
 
+    // FirebaseAuth.instance.signOut();
+
     getCurrentLocation();
-    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       resizeToAvoidBottomInset: true,
       body: CustomScrollView(
         slivers: [
@@ -143,6 +159,30 @@ class _DashboardMainState extends State<DashboardMain> {
                   showDotIndicator: false,
                 ),
                 const SizedBox(height: 20),
+              ],
+            ),
+          ),
+          SliverGrid.extent(
+            maxCrossAxisExtent: MediaQuery.of(context).size.width * 0.25,
+            children: primaryServicesData
+                .map((primaryServicesDataCard) => GestureDetector(
+                      onTap: () {
+                        if (FirebaseAuth.instance.currentUser == null) {
+                          authBottomSheet();
+                        } else {
+                          Navigator.pushNamed(context, '/selectDataTime');
+                        }
+                      },
+                      child: Center(
+                        child:
+                            primaryServices(context, primaryServicesDataCard),
+                      ),
+                    ))
+                .toList(),
+          ),
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
                 Image.asset(
                   'assets/images/safety.png',
                   width: MediaQuery.of(context).size.width,
@@ -206,8 +246,17 @@ class _DashboardMainState extends State<DashboardMain> {
             maxCrossAxisExtent: MediaQuery.of(context).size.width * 0.35,
             childAspectRatio: 0.6,
             children: sameDayServiceData
-                .map((sameDayServiceDataCard) => SameDaySrevice(
-                    sameDayServiceDataCard: sameDayServiceDataCard))
+                .map((sameDayServiceDataCard) => GestureDetector(
+                      onTap: () {
+                        if (FirebaseAuth.instance.currentUser == null) {
+                          authBottomSheet();
+                        } else {
+                          Navigator.pushNamed(context, '/selectDataTime');
+                        }
+                      },
+                      child: SameDaySrevice(
+                          sameDayServiceDataCard: sameDayServiceDataCard),
+                    ))
                 .toList(),
           ),
           SliverToBoxAdapter(
@@ -366,10 +415,11 @@ class _DashboardMainState extends State<DashboardMain> {
       'assets/images/auth.png',
       'assets/images/auth.png'
     ];
+    TextEditingController phoneNumberController = TextEditingController();
+    TextEditingController otpController = TextEditingController();
 
-    OutlineInputBorder pinkBorderTFF = const OutlineInputBorder(
-        borderSide: BorderSide(color: Color(0xffD2137B), width: 2));
     showModalBottomSheet(
+        isScrollControlled: true,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
         context: context,
@@ -377,6 +427,7 @@ class _DashboardMainState extends State<DashboardMain> {
           return StatefulBuilder(
             builder: (context, setState) {
               return Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(12.0),
@@ -386,7 +437,7 @@ class _DashboardMainState extends State<DashboardMain> {
                       showDotIndicator: true,
                     ),
                   ),
-                  changeSection(setState)
+                  changeSection(setState, phoneNumberController, otpController)
                 ],
               );
             },
@@ -394,210 +445,226 @@ class _DashboardMainState extends State<DashboardMain> {
         });
   }
 
-  Widget changeSection(StateSetter setState) {
+  Widget changeSection(
+      StateSetter setState,
+      TextEditingController phoneNumberController,
+      TextEditingController otpController) {
     return AnimatedCrossFade(
-        firstChild: phnNumberInput(setState),
-        secondChild: otpVerification(),
+        firstChild: phnNumberInput(setState, phoneNumberController),
+        secondChild: otpVerification(otpController, phoneNumberController),
         crossFadeState:
             otpSent ? CrossFadeState.showSecond : CrossFadeState.showFirst,
         duration: const Duration(milliseconds: 200));
   }
 
-  Widget phnNumberInput(StateSetter setter) {
-    return Form(
-      key: phnNumberForm,
-      child: Column(
-        children: [
-          Text(
-            'Enter Mobile Number',
-            style: Theme.of(context)
-                .textTheme
-                .headline4!
-                .copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            child: TextFormField(
-              controller: phoneNumberController,
-              validator: Utility.phoneNumberValidator,
-              keyboardType: TextInputType.number,
-              style: Theme.of(context).textTheme.headline4!.copyWith(
-                    fontSize: 16,
-                  ),
-              decoration: InputDecoration(
-                hintText: 'Enter 10 digit mobile number',
-                hintStyle: Theme.of(context).textTheme.headline4!.copyWith(
-                      fontSize: 16,
-                      color: const Color(0xff929292),
-                    ),
-                prefixIcon: Padding(
-                  padding: const EdgeInsets.only(left: 12, top: 12.0),
-                  child: Text(
-                    '+91',
-                    style: Theme.of(context).textTheme.headline4!.copyWith(
-                          fontSize: 16,
-                        ),
-                  ),
-                ),
-                border: pinkBorderTFF,
-                enabledBorder: pinkBorderTFF,
-                focusedBorder: pinkBorderTFF,
-                disabledBorder: pinkBorderTFF,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    primary: const Color(0xffd2137b),
-                    fixedSize: Size(MediaQuery.of(context).size.width, 50)),
-                onPressed: () {
-                  var valid = phnNumberForm.currentState!.validate();
-                  if (valid) {
-                    sendOtp(setter);
-
-                    setter(() {});
-                  }
-                },
-                child: Text(
-                  'Get Otp',
-                  style: Theme.of(context).textTheme.headline4!.copyWith(
-                      fontSize: 16,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.underline),
-                )),
-          ),
-          const SizedBox(height: 12),
-          RichText(
-            textAlign: TextAlign.center,
-            text: TextSpan(
-              children: [
-                TextSpan(
-                  text:
-                      'By creating an account or logging in you agree to YorLook',
-                  style: Theme.of(context).textTheme.headline4!.copyWith(
-                        fontSize: 12,
-                      ),
-                ),
-                TextSpan(
-                  text: ' Terms of Use',
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline4!
-                      .copyWith(fontSize: 12, color: const Color(0xffD2137B)),
-                ),
-                TextSpan(
-                  text: 'and',
-                  style: Theme.of(context).textTheme.headline4!.copyWith(
-                        fontSize: 12,
-                      ),
-                ),
-                TextSpan(
-                  text: ' Privacy Policy',
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline4!
-                      .copyWith(fontSize: 12, color: const Color(0xffD2137B)),
-                ),
-                TextSpan(
-                  text:
-                      ' and consent to the collection and use of your personal information/sensitive personal data or information.',
-                  style: Theme.of(context).textTheme.headline4!.copyWith(
-                        fontSize: 12,
-                      ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget otpVerification() {
-    return Form(
-      key: otpForm,
-      child: Column(
-        children: [
-          Text(
-            'Enter OTP',
-            style: Theme.of(context)
-                .textTheme
-                .headline4!
-                .copyWith(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            child: PinCodeTextField(
-              appContext: context,
-              length: 6,
-              controller: otpController,
-              validator: Utility.otpValidator,
-              animationType: AnimationType.scale,
-              keyboardType: TextInputType.number,
-              onChanged: (otp) {
-                // verifyOtp(otp);
-              },
-              pinTheme: PinTheme(
-                  shape: PinCodeFieldShape.box,
-                  fieldOuterPadding: const EdgeInsets.symmetric(horizontal: 0),
-                  borderWidth: 2,
-                  fieldHeight: 45,
-                  fieldWidth: 50,
-                  borderRadius: BorderRadius.circular(12),
-                  activeColor: const Color(0xffd2137b),
-                  inactiveColor: const Color(0xffd2137b),
-                  selectedColor: const Color(0xffd2137b)),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    primary: const Color(0xffd2137b),
-                    fixedSize: Size(MediaQuery.of(context).size.width, 50)),
-                onPressed: () {
-                  var valid = phnNumberForm.currentState!.validate();
-                  if (valid) {
-                    verifyOtp();
-                  }
-                },
-                child: Text(
-                  'Submit',
-                  style: Theme.of(context).textTheme.headline4!.copyWith(
-                      fontSize: 16,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.underline),
-                )),
-          ),
-          RichText(
-              text: TextSpan(children: [
-            TextSpan(
-              text: 'We have sent you a 6 digit verification code on',
-              style: Theme.of(context).textTheme.headline4!.copyWith(
-                    fontSize: 12,
-                    color: const Color(0xff555555),
-                  ),
-            ),
-            TextSpan(
-              text: ' +91 ${phoneNumberController.text}',
+  Widget phnNumberInput(
+      StateSetter setter, TextEditingController phoneNumberController) {
+    return Padding(
+      padding:
+          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      child: Form(
+        key: phnNumberForm,
+        child: Column(
+          children: [
+            Text(
+              'Enter Mobile Number',
               style: Theme.of(context)
                   .textTheme
                   .headline4!
-                  .copyWith(fontSize: 12, fontWeight: FontWeight.bold),
-            )
-          ]))
-        ],
+                  .copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              child: TextFormField(
+                controller: phoneNumberController,
+                validator: Utility.phoneNumberValidator,
+                keyboardType: TextInputType.number,
+                style: Theme.of(context).textTheme.headline4!.copyWith(
+                      fontSize: 16,
+                    ),
+                decoration: InputDecoration(
+                  hintText: 'Enter 10 digit mobile number',
+                  hintStyle: Theme.of(context).textTheme.headline4!.copyWith(
+                        fontSize: 16,
+                        color: const Color(0xff929292),
+                      ),
+                  prefixIcon: Padding(
+                    padding: const EdgeInsets.only(left: 12, top: 12.0),
+                    child: Text(
+                      '+91',
+                      style: Theme.of(context).textTheme.headline4!.copyWith(
+                            fontSize: 16,
+                          ),
+                    ),
+                  ),
+                  border: pinkBorderTFF,
+                  enabledBorder: pinkBorderTFF,
+                  focusedBorder: pinkBorderTFF,
+                  disabledBorder: pinkBorderTFF,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      primary: const Color(0xffd2137b),
+                      fixedSize: Size(MediaQuery.of(context).size.width, 50)),
+                  onPressed: () {
+                    var valid = phnNumberForm.currentState!.validate();
+                    if (valid) {
+                      sendOtp(setter, phoneNumberController);
+
+                      setter(() {});
+                    }
+                  },
+                  child: Text(
+                    'Get Otp',
+                    style: Theme.of(context).textTheme.headline4!.copyWith(
+                        fontSize: 16,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.underline),
+                  )),
+            ),
+            const SizedBox(height: 12),
+            RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text:
+                        'By creating an account or logging in you agree to YorLook',
+                    style: Theme.of(context).textTheme.headline4!.copyWith(
+                          fontSize: 12,
+                        ),
+                  ),
+                  TextSpan(
+                    text: ' Terms of Use',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline4!
+                        .copyWith(fontSize: 12, color: const Color(0xffD2137B)),
+                  ),
+                  TextSpan(
+                    text: 'and',
+                    style: Theme.of(context).textTheme.headline4!.copyWith(
+                          fontSize: 12,
+                        ),
+                  ),
+                  TextSpan(
+                    text: ' Privacy Policy',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline4!
+                        .copyWith(fontSize: 12, color: const Color(0xffD2137B)),
+                  ),
+                  TextSpan(
+                    text:
+                        ' and consent to the collection and use of your personal information/sensitive personal data or information.',
+                    style: Theme.of(context).textTheme.headline4!.copyWith(
+                          fontSize: 12,
+                        ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  void sendOtp(StateSetter setter) async {
+  Widget otpVerification(TextEditingController otpController,
+      TextEditingController phoneNumberController) {
+    return Padding(
+      padding:
+          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      child: Form(
+        key: otpForm,
+        child: Column(
+          children: [
+            Text(
+              'Enter OTP',
+              style: Theme.of(context)
+                  .textTheme
+                  .headline4!
+                  .copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              child: PinCodeTextField(
+                appContext: context,
+                length: 6,
+                controller: otpController,
+                validator: Utility.otpValidator,
+                animationType: AnimationType.scale,
+                keyboardType: TextInputType.number,
+                onChanged: (otp) {
+                  // verifyOtp(otp);
+                },
+                pinTheme: PinTheme(
+                    shape: PinCodeFieldShape.box,
+                    fieldOuterPadding:
+                        const EdgeInsets.symmetric(horizontal: 0),
+                    borderWidth: 2,
+                    fieldHeight: 45,
+                    fieldWidth: 50,
+                    borderRadius: BorderRadius.circular(12),
+                    activeColor: const Color(0xffd2137b),
+                    inactiveColor: const Color(0xffd2137b),
+                    selectedColor: const Color(0xffd2137b)),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      primary: const Color(0xffd2137b),
+                      fixedSize: Size(MediaQuery.of(context).size.width, 50)),
+                  onPressed: () {
+                    var valid = phnNumberForm.currentState!.validate();
+                    if (valid) {
+                      verifyOtp(otpController);
+                    }
+                  },
+                  child: Text(
+                    'Submit',
+                    style: Theme.of(context).textTheme.headline4!.copyWith(
+                        fontSize: 16,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.underline),
+                  )),
+            ),
+            RichText(
+                text: TextSpan(children: [
+              TextSpan(
+                text: 'We have sent you a 6 digit verification code on',
+                style: Theme.of(context).textTheme.headline4!.copyWith(
+                      fontSize: 12,
+                      color: const Color(0xff555555),
+                    ),
+              ),
+              TextSpan(
+                text: ' +91 ${phoneNumberController.text}',
+                style: Theme.of(context)
+                    .textTheme
+                    .headline4!
+                    .copyWith(fontSize: 12, fontWeight: FontWeight.bold),
+              )
+            ])),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void sendOtp(
+      StateSetter setter, TextEditingController phoneNumberController) async {
     await FirebaseAuth.instance
         .verifyPhoneNumber(
             phoneNumber: "+91" + phoneNumberController.text,
@@ -608,6 +675,7 @@ class _DashboardMainState extends State<DashboardMain> {
         .onError((error, stackTrace) {
       Fluttertoast.showToast(msg: error.toString());
     }).then((value) {
+      otpSent = true;
       setter(() {});
     });
   }
@@ -616,33 +684,60 @@ class _DashboardMainState extends State<DashboardMain> {
 
   void codeSent(String verificationId, [int? smsCode]) async {
     verificationIdLocal = verificationId;
-    otpSent = true;
+
     setState(() {});
   }
 
   void verificationFailed(FirebaseAuthException exception) {
-    print(exception.message);
     Fluttertoast.showToast(msg: exception.message.toString());
     Navigator.pop(context);
   }
 
   void verificationCompleted(PhoneAuthCredential credential) async {}
 
-  void verifyOtp() async {
+  void verifyOtp(TextEditingController otpController) async {
     final valid = otpForm.currentState!.validate();
     if (valid) {
       DialogShared.loadingDialog(context, "Loading...");
       final credential = PhoneAuthProvider.credential(
           verificationId: verificationIdLocal, smsCode: otpController.text);
-
-      await FirebaseAuth.instance
-          .signInWithCredential(credential)
-          .catchError((e) {
+      try {
+        await FirebaseAuth.instance
+            .signInWithCredential(credential)
+            .catchError((e) {
+          Fluttertoast.showToast(msg: e.toString());
+        }).whenComplete(() {
+          Navigator.pop(context);
+          Navigator.pop(context);
+        });
+      } on FirebaseException catch (e) {
         Fluttertoast.showToast(msg: e.toString());
-      });
-
-      Navigator.pop(context);
+      }
     }
+  }
+
+  Widget primaryServices(
+      BuildContext context, PrimaryServicesModel primaryServicesModel) {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.25,
+      decoration:
+          BoxDecoration(border: Border.all(color: const Color(0xffF2F2F2))),
+      child: Column(
+        children: [
+          Icon(
+            primaryServicesModel.icon,
+            color: const Color(0xff4267B2),
+            size: 40,
+          ),
+          Text(
+            primaryServicesModel.serviceName,
+            textAlign: TextAlign.center,
+            style:
+                Theme.of(context).textTheme.headline1!.copyWith(fontSize: 14),
+          )
+        ],
+      ),
+    );
   }
 
   void getCurrentLocation() async {
