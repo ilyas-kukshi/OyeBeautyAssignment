@@ -79,7 +79,7 @@ class _SelectDateTimeState extends State<SelectDateTime> {
             child: RawScrollbar(
               controller: scrollController,
               radius: const Radius.circular(4),
-              isAlwaysShown: true,
+              thumbVisibility: true,
               thumbColor: const Color(0xffC4C4C4),
               child: ListView.builder(
                 controller: scrollController,

@@ -84,7 +84,7 @@ class _DashboardMainState extends State<DashboardMain> {
   void initState() {
     super.initState();
     if (FirebaseAuth.instance.currentUser == null) {
-      SchedulerBinding.instance?.addPostFrameCallback((timeStamp) {
+      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
         authBottomSheet();
       });
     }
@@ -477,6 +477,7 @@ class _DashboardMainState extends State<DashboardMain> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12.0),
               child: TextFormField(
+                autofocus: true,
                 controller: phoneNumberController,
                 validator: Utility.phoneNumberValidator,
                 keyboardType: TextInputType.number,

@@ -1,7 +1,5 @@
-import 'package:argon_buttons_flutter/argon_buttons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class AppThemeShared {
   static Color turquoise = const Color(0xff04D4F0);
@@ -29,36 +27,33 @@ class AppThemeShared {
     );
   }
 
-  static argonButtonShared({
-    required BuildContext context,
-    required double height,
-    required double width,
-    required Color color,
-    required String buttonText,
-    required dynamic Function(Function, Function, ButtonState)? onTap,
-    double borderRadius = 0.0,
-  }) {
-    return ArgonButton(
-      height: height,
-      width: width,
-      color: color,
-      borderRadius: borderRadius,
+  static sharedButton(
+      {required BuildContext context,
+      double height = 60,
+      required double width,
+      Color color = const Color(0xff62B6B7),
+      required String buttonText,
+      required dynamic Function()? onTap,
+      double borderRadius = 0.0,
+      double textSize = 16,
+      Color textColor = Colors.white,
+      FontWeight fontWeight = FontWeight.w600}) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+          fixedSize: Size(width, height),
+          backgroundColor: color,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(borderRadius),
+          )),
+      onPressed: onTap,
       child: Text(
         buttonText,
         style: Theme.of(context)
             .textTheme
-            .headline3
-            ?.copyWith(fontSize: 16)
-            .copyWith(color: Colors.black),
+            .headline1
+            ?.copyWith(fontSize: textSize)
+            .copyWith(color: textColor, fontWeight: fontWeight),
       ),
-      loader: Container(
-        padding: const EdgeInsets.all(10),
-        child: const SpinKitRotatingCircle(
-          color: Colors.white,
-          // size: loaderWidth ,
-        ),
-      ),
-      onTap: onTap,
     );
 
     // return ElevatedButton(
@@ -171,7 +166,7 @@ class AppThemeShared {
           buttonText,
           style: Theme.of(context).textTheme.headline3?.copyWith(fontSize: 16),
         ),
-        style: ElevatedButton.styleFrom(primary: color),
+        // style: ElevatedButton.styleFrom(primary: color),
       ),
     );
   }
